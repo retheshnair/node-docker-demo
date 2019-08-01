@@ -21,6 +21,7 @@ FROM scratch
 
 COPY --from=build /src /
 COPY --from=build /etc/passwd /etc/group /etc/
+COPY --from=build /usr/local/bin/node /
 
 # Set environment to "development" by default
 ENV NODE_ENV development
