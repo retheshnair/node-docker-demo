@@ -19,13 +19,8 @@ COPY ./nodemon.json /src/nodemon.json
 
 FROM scratch
 
-RUN  mkdir /src
-COPY --from=build /src /src/
+COPY --from=build /src /
 COPY --from=build /etc/passwd /etc/group /etc/
-
-# Specify the "working directory" for the rest of the Dockerfile
-WORKDIR /src
-
 
 # Set environment to "development" by default
 ENV NODE_ENV development
@@ -37,4 +32,4 @@ EXPOSE 3000
 USER node:node
 
 # The command uses nodemon to run the application
-CMD ["node", "node_modules/.bin/nodemon", "-L", "bin/www"]
+CMD ["./node", "./node_modules/bin/nodemon", "-L", "bin/www"]
