@@ -27,6 +27,7 @@ WORKDIR /
 
 COPY --from=build /src /
 COPY --from=build /etc/passwd /etc/group /etc/
+COPY --from=build /usr/local/bin/node /usr/local/bin/node
 
 # Allows port 12345 to be publicly available
 EXPOSE 12345
