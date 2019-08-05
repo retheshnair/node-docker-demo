@@ -1,5 +1,5 @@
 # Specifies the base image we're extending
-FROM node:9
+FROM node:alpine as build
 
 # Specify the "working directory" for the rest of the Dockerfile
 WORKDIR /src
@@ -7,7 +7,8 @@ WORKDIR /src
 # Install packages using NPM 5 (bundled with the node:9 image)
 COPY ./package.json /src/package.json
 COPY ./package-lock.json /src/package-lock.json
-RUN npm install --silent
+RUN npm install --silent  && \
+    chmod -s /home/node
 
 # Add application code
 COPY ./app /src/app
@@ -20,8 +21,21 @@ COPY ./nodemon.json /src/nodemon.json
 # Set environment to "development" by default
 ENV NODE_ENV development
 
-# Allows port 3000 to be publicly available
-EXPOSE 3000
+FROM scratch
+
+WORKDIR /
+
+COPY --from=build /src /
+COPY --from=build /etc/passwd /etc/group /etc/
+
+# Allows port 12345 to be publicly available
+EXPOSE 12345
+
+# Set user as non-privileged alternative to root
+USER node:node
 
 # The command uses nodemon to run the application
 CMD ["node", "node_modules/.bin/nodemon", "-L", "bin/www"]
+
+# HealthCheck
+HEALTHCHECK CMD curl --fail http://localhost:12345/ || exit 1
