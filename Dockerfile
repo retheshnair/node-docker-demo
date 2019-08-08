@@ -1,5 +1,5 @@
 # Specifies the base image we're extending
-FROM node:slim
+FROM node:current-alpine
 
 # Specify the "working directory" for the rest of the Dockerfile
 WORKDIR /src
